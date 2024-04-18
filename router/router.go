@@ -15,7 +15,6 @@ func Init() {
 	v1 := e.Group("/api/v1")
 	v1.GET("/users", api.Users)
 	v1.GET("/users/:id", api.GetUser)
-	v1.GET("/members", api.Members)
 
 	e.Logger.Fatal(e.Start(":8085"))
 }
