@@ -9,12 +9,16 @@ import (
 
 func Init() {
 	e := echo.New()
+	e.HideBanner = true
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
 	v1 := e.Group("/api/v1")
 	v1.GET("/users", api.Users)
 	v1.GET("/users/:id", api.GetUser)
+	v1.POST("/users", api.AddUser)
+	v1.PUT("/users/:id", api.UpdateUser)
+	v1.DELETE("/users/:id", api.DeleteUser)
 
 	e.Logger.Fatal(e.Start(":8085"))
 }

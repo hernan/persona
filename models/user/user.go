@@ -7,6 +7,7 @@ type User struct {
 	FirstName *string `json:"first_name" db:"first_name"`
 	LastName  *string `json:"last_name" db:"last_name"`
 	Email     *string `json:"email" db:"email"`
+	Password  *string `json:"-" db:"password"`
 }
 
 type Users []User
@@ -41,7 +42,49 @@ func FindByID(id int) User {
 	return user
 }
 
-func (u *Users) AddUser(user User) Users {
-	*u = append(*u, user)
-	return *u
+func Create(user User) User {
+	stmt, err := models.MyDb.Prepare("INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	res, err := stmt.Exec(user.FirstName, user.LastName, user.Email, user.Password)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	id, err := res.LastInsertId()
+	if err != nil {
+		panic(err.Error())
+	}
+
+	user.ID = int(id)
+
+	return user
+}
+
+func Update(user User) User {
+	stmt, err := models.MyDb.Prepare("UPDATE users SET first_name = ?, last_name = ?, email = ? WHERE id = ?")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	_, err = stmt.Exec(user.FirstName, user.LastName, user.Email, user.ID)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	return user
+}
+
+func Delete(id int) {
+	stmt, err := models.MyDb.Prepare("DELETE FROM users WHERE id = ?")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	_, err = stmt.Exec(id)
+	if err != nil {
+		panic(err.Error())
+	}
 }
