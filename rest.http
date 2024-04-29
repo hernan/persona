@@ -1,15 +1,23 @@
-GET http://localhost:8085/api/v1/users
+@hostname = localhost
+@port = 8085
+@host = {{hostname}}:{{port}}
+@token = token123
+
+
+GET http://{{host}}/api/v1/users
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 ###
 
-GET http://localhost:8085/api/v1/users/1
+GET http://{{host}}/api/v1/users/1
 Content-Type: application/json
-
+Authorization: Bearer {{token}}
 ###
 
-POST http://localhost:8085/api/v1/users
+POST http://{{token}}/api/v1/users
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
     "first_name": "John",
@@ -19,8 +27,9 @@ Content-Type: application/json
 
 ###
 
-PUT http://localhost:8085/api/v1/users/1
+PUT http://{{host}}/api/v1/users/1
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
     "first_name": "Jane",
@@ -30,5 +39,6 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:8085/api/v1/users/2
+DELETE http://{{host}}/api/v1/users/2
 Content-Type: application/json
+Authorization: Bearer {{token}}
