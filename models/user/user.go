@@ -13,22 +13,23 @@ type User struct {
 type Users []User
 
 func FindAll() (Users, error) {
-	users, err := models.MyDb.Query("SELECT id, first_name, last_name, email FROM users limit 10")
+	rows, err := models.MyDb.Query("SELECT id, first_name, last_name, email FROM users limit 10")
 	if err != nil {
 		return nil, err
 	}
 
-	u := Users{}
-	for users.Next() {
+	users := Users{}
+	for rows.Next() {
 		var user User
-		err = users.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Email)
+		err = rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Email)
 		if err != nil {
 			return nil, err
 		}
-		u = append(u, user)
+		users = append(users, user)
 	}
 
-	return u, nil
+	rows.Close()
+	return users, nil
 }
 
 func FindByID(id int) (User, error) {
@@ -48,6 +49,7 @@ func Create(user User) (User, error) {
 		return User{}, err
 	}
 
+	defer stmt.Close()
 	res, err := stmt.Exec(user.FirstName, user.LastName, user.Email, user.Password)
 	if err != nil {
 		return User{}, err
@@ -69,6 +71,7 @@ func Update(user User) (User, error) {
 		return User{}, err
 	}
 
+	defer stmt.Close()
 	_, err = stmt.Exec(user.FirstName, user.LastName, user.Email, user.ID)
 	if err != nil {
 		return User{}, err
@@ -83,6 +86,7 @@ func Delete(id int) error {
 		return err
 	}
 
+	defer stmt.Close()
 	_, err = stmt.Exec(id)
 	if err != nil {
 		return err
