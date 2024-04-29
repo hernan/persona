@@ -2,14 +2,23 @@ package models
 
 import (
 	"database/sql"
+	"os"
 
-	_ "github.com/go-sql-driver/mysql"
+	"github.com/go-sql-driver/mysql"
 )
 
 var MyDb *sql.DB
 
 func DBInit() {
-	db, err := sql.Open("mysql", "hernan:changeme@/persona_development")
+	cfg := mysql.Config{
+		User:   os.Getenv("DB_USER"),
+		Passwd: os.Getenv("DB_PASSWORD"),
+		Net:    "tcp",
+		Addr:   os.Getenv("DB_HOST") + ":" + os.Getenv("DB_PORT"),
+		DBName: os.Getenv("DB_NAME"),
+	}
+
+	db, err := sql.Open("mysql", cfg.FormatDSN())
 
 	if err != nil {
 		panic(err.Error()) // Just for example purpose. You should use proper error handling instead of panic
