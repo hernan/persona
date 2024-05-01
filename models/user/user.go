@@ -4,16 +4,17 @@ import "persona/models"
 
 type User struct {
 	ID        int     `json:"id"`
-	FirstName *string `json:"first_name" db:"first_name"`
-	LastName  *string `json:"last_name" db:"last_name"`
+	Name      *string `json:"name" db:"name"`
 	Email     *string `json:"email" db:"email"`
-	Password  *string `json:"-" db:"password"`
+	Phone     *string `json:"phone" db:"phone"`
+	BirthDay  *string `json:"birthday" db:"birthday"`
+	CreatedAt *string `json:"created_at" db:"created_at"`
 }
 
 type Users []User
 
 func FindAll() (Users, error) {
-	rows, err := models.MyDb.Query("SELECT id, first_name, last_name, email FROM users limit 10")
+	rows, err := models.MyDb.Query("SELECT * FROM users limit 10")
 	if err != nil {
 		return nil, err
 	}
@@ -21,7 +22,7 @@ func FindAll() (Users, error) {
 	users := Users{}
 	for rows.Next() {
 		var user User
-		err = rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Email)
+		err = rows.Scan(&user.ID, &user.Name, &user.Email, &user.Phone, &user.BirthDay, &user.CreatedAt)
 		if err != nil {
 			return nil, err
 		}
@@ -34,8 +35,8 @@ func FindAll() (Users, error) {
 
 func FindByID(id int) (User, error) {
 	user := User{}
-	row := models.MyDb.QueryRow("SELECT id, first_name, last_name, email FROM users WHERE id = ?", id)
-	err := row.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Email)
+	row := models.MyDb.QueryRow("SELECT * FROM users WHERE id = ?", id)
+	err := row.Scan(&user.ID, &user.Name, &user.Email, &user.Phone, &user.BirthDay, &user.CreatedAt)
 	if err != nil {
 		return User{}, err
 	}
@@ -44,13 +45,13 @@ func FindByID(id int) (User, error) {
 }
 
 func Create(user User) (User, error) {
-	stmt, err := models.MyDb.Prepare("INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)")
+	stmt, err := models.MyDb.Prepare("INSERT INTO users (name, email, phone, birthday) VALUES (?, ?, ?, ?)")
 	if err != nil {
 		return User{}, err
 	}
 
 	defer stmt.Close()
-	res, err := stmt.Exec(user.FirstName, user.LastName, user.Email, user.Password)
+	res, err := stmt.Exec(user.Name, user.Email, user.Phone, user.BirthDay)
 	if err != nil {
 		return User{}, err
 	}
@@ -66,13 +67,13 @@ func Create(user User) (User, error) {
 }
 
 func Update(user User) (User, error) {
-	stmt, err := models.MyDb.Prepare("UPDATE users SET first_name = ?, last_name = ?, email = ? WHERE id = ?")
+	stmt, err := models.MyDb.Prepare("UPDATE users SET name = ?, email = ?, phone = ?, birthday WHERE id = ?")
 	if err != nil {
 		return User{}, err
 	}
 
 	defer stmt.Close()
-	_, err = stmt.Exec(user.FirstName, user.LastName, user.Email, user.ID)
+	_, err = stmt.Exec(user.Name, user.Email, user.Phone, user.BirthDay, user.ID)
 	if err != nil {
 		return User{}, err
 	}
