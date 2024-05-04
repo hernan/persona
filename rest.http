@@ -13,16 +13,18 @@ Authorization: Bearer {{token}}
 GET http://{{host}}/api/v1/users/1
 Content-Type: application/json
 Authorization: Bearer {{token}}
+
 ###
 
-POST http://{{token}}/api/v1/users
+POST http://{{host}}/api/v1/users
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "first_name": "John",
-    "last_name": "Doe",
-    "email": "john.doe@example.com"
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "phone": "1234567890",
+    "birthday": "1990-01-01"
 }
 
 ###
@@ -32,9 +34,10 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "first_name": "Jane",
-    "last_name": "Doe",
-    "email": "jane.doe@example.com"
+    "name": "Jane Doe",
+    "email": "jane.doe@example.com",
+    "phone": "1234567890",
+    "birthday": "1990-01-01"
 }
 
 ###
@@ -47,19 +50,19 @@ Authorization: Bearer {{token}}
 
 GET http://{{host}}/api/v1/accounts
 Content-Type: application/json
-Authorization: Bearer {{token}}
+# Authorization: Bearer {{token}}
 
 ###
 
 GET http://{{host}}/api/v1/accounts/1
 Content-Type: application/json
-Authorization: Bearer {{token}}
+# Authorization: Bearer {{token}}
 
 ###
 
 POST http://{{host}}/api/v1/accounts
 Content-Type: application/json
-Authorization: Bearer {{token}}
+# Authorization: Bearer {{token}}
 
 {
     "name": "Some User",

@@ -67,7 +67,7 @@ func Create(user User) (User, error) {
 }
 
 func Update(user User) (User, error) {
-	stmt, err := models.MyDb.Prepare("UPDATE users SET name = ?, email = ?, phone = ?, birthday WHERE id = ?")
+	stmt, err := models.MyDb.Prepare("UPDATE users SET name = ?, email = ?, phone = ?, birthday = ? WHERE id = ?")
 	if err != nil {
 		return User{}, err
 	}
