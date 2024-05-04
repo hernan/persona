@@ -1,5 +1,6 @@
 x Add migrations
 x Add account model
+Add validation to base user/account models
 Add session endpoint to login accounts
 Handle token auth from session login
 Segregate endpoints to auth and no-auth

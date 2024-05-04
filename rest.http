@@ -42,3 +42,26 @@ Authorization: Bearer {{token}}
 DELETE http://{{host}}/api/v1/users/2
 Content-Type: application/json
 Authorization: Bearer {{token}}
+
+### Accounts
+
+GET http://{{host}}/api/v1/accounts
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+
+GET http://{{host}}/api/v1/accounts/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+
+POST http://{{host}}/api/v1/accounts
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name": "Some User",
+    "password": "password"
+}
