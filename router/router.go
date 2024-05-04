@@ -25,6 +25,13 @@ func Init() {
 	v1.PUT("/users/:id", api.UpdateUser)
 	v1.DELETE("/users/:id", api.DeleteUser)
 
+	v1Acc := v1.Group("/accounts")
+	v1Acc.GET("", api.Accounts)
+	v1Acc.GET("/:id", api.GetAccount)
+	v1Acc.POST("", api.AddAccount)
+	v1Acc.PUT("/:id", api.UpdateAccount)
+	v1Acc.DELETE("/:id", api.DeleteAccount)
+
 	e.Logger.Fatal(e.Start(":8085"))
 }
 
