@@ -28,8 +28,8 @@ func TestValidate(t *testing.T) {
 	err = Validate(account)
 	if err == nil {
 		t.Error("Expected error, got nil")
-	} else if err.Error() != "name is required" {
-		t.Errorf("Expected error 'name is required', got: %v", err)
+	} else if err.Error() != "Name cannot be empty" {
+		t.Errorf("Expected error 'Name cannot be empty', got: %v", err)
 	}
 
 	// Test case 3: Missing password
@@ -40,8 +40,8 @@ func TestValidate(t *testing.T) {
 	err = Validate(account)
 	if err == nil {
 		t.Error("Expected error, got nil")
-	} else if err.Error() != "password is required" {
-		t.Errorf("Expected error 'password is required', got: %v", err)
+	} else if err.Error() != "Password cannot be empty" {
+		t.Errorf("Expected error 'Password cannot be empty', got: %v", err)
 	}
 
 	// Test case 4: Password is empty
@@ -53,7 +53,18 @@ func TestValidate(t *testing.T) {
 	err = Validate(account)
 	if err == nil {
 		t.Error("Expected error, got nil")
-	} else if err.Error() != "password is required" {
-		t.Errorf("Expected error 'password is required', got: %v", err)
+	} else if err.Error() != "Password cannot be empty" {
+		t.Errorf("Expected error 'Password cannot be empty', got: %v", err)
 	}
+
+	// Test case 5: Name and Password are empty
+	account = Account{}
+
+	err = Validate(account)
+	if err == nil {
+		t.Error("Expected error, got nil")
+	} else if err.Error() != "Name cannot be empty, Password cannot be empty" {
+		t.Errorf("Expected error 'Name cannot be empty, Password cannot be empty', got: %v", err)
+	}
+
 }
