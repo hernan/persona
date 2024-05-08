@@ -109,3 +109,14 @@ func Delete(id int) error {
 
 	return nil
 }
+
+func FindByName(name string) (Account, error) {
+	account := Account{}
+	row := models.MyDb.QueryRow("SELECT * FROM accounts WHERE name = ?", name)
+	err := row.Scan(&account.ID, &account.Name, &account.Password, &account.CreatedAt)
+	if err != nil {
+		return Account{}, err
+	}
+
+	return account, nil
+}

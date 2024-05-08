@@ -6,19 +6,19 @@
 
 GET http://{{host}}/api/v1/users
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{login.response.body.$.token}}
 
 ###
 
 GET http://{{host}}/api/v1/users/1
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{login.response.body.$.token}}
 
 ###
 
 POST http://{{host}}/api/v1/users
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{login.response.body.$.token}}
 
 {
     "name": "John Doe",
@@ -31,7 +31,7 @@ Authorization: Bearer {{token}}
 
 PUT http://{{host}}/api/v1/users/1
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{login.response.body.$.token}}
 
 {
     "name": "Jane Doe",
@@ -44,25 +44,36 @@ Authorization: Bearer {{token}}
 
 DELETE http://{{host}}/api/v1/users/2
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{login.response.body.$.token}}
 
 ### Accounts
 
 GET http://{{host}}/api/v1/accounts
 Content-Type: application/json
-# Authorization: Bearer {{token}}
+Authorization: Bearer {{login.response.body.$.token}}
 
 ###
 
 GET http://{{host}}/api/v1/accounts/1
 Content-Type: application/json
-# Authorization: Bearer {{token}}
+Authorization: Bearer {{login.response.body.$.token}}
 
 ###
 
 POST http://{{host}}/api/v1/accounts
 Content-Type: application/json
-# Authorization: Bearer {{token}}
+Authorization: Bearer {{login.response.body.$.token}}
+
+{
+    "name": "Some User",
+    "password": "password"
+}
+
+
+### Sessions
+# @name login
+POST http://{{host}}/api/v1/session
+Content-Type: application/json
 
 {
     "name": "Some User",

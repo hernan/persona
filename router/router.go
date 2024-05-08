@@ -2,8 +2,8 @@ package router
 
 import (
 	"net/http"
-	"os"
 	"persona/api"
+	"persona/models/session"
 	"strings"
 
 	"github.com/labstack/echo/v4"
@@ -16,9 +16,9 @@ func Init() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	v1 := e.Group("/api/v1")
+	v1 := e.Group("/api/v1", apiV1TokenMiddleware)
 
-	users := v1.Group("/users", apiTokenMiddleware)
+	users := v1.Group("/users")
 	users.GET("", api.Users)
 	users.GET("/:id", api.GetUser)
 	users.POST("", api.AddUser)
@@ -32,14 +32,19 @@ func Init() {
 	accounts.PUT("/:id", api.UpdateAccount)
 	accounts.DELETE("/:id", api.DeleteAccount)
 
+	session := v1.Group("/session")
+	session.POST("", api.Login)
+	session.DELETE("", api.Logout)
+
 	e.Logger.Fatal(e.Start(":8085"))
 }
 
-func apiTokenMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+func apiV1TokenMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		token := os.Getenv("TOKEN")
-		if token == "" {
-			return echo.NewHTTPError(http.StatusInternalServerError, "Token not defined")
+		urlPath := c.Request().URL.Path
+
+		if urlPath == "/api/v1/session" {
+			return next(c)
 		}
 
 		authHeader := c.Request().Header.Get("Authorization")
@@ -52,7 +57,12 @@ func apiTokenMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		providedToken := strings.TrimPrefix(authHeader, "Bearer ")
-		if providedToken != token {
+		if providedToken == "" {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Token not defined")
+		}
+
+		_, err := session.FindBySession(providedToken)
+		if err != nil {
 			return echo.NewHTTPError(http.StatusUnauthorized, "Invalid token")
 		}
 
