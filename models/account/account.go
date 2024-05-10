@@ -21,6 +21,7 @@ func FindAll() (Accounts, error) {
 		return nil, err
 	}
 
+	defer rows.Close()
 	accounts := Accounts{}
 	for rows.Next() {
 		var account Account
@@ -31,7 +32,6 @@ func FindAll() (Accounts, error) {
 		accounts = append(accounts, account)
 	}
 
-	rows.Close()
 	return accounts, nil
 }
 

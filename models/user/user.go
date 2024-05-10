@@ -1,6 +1,10 @@
 package user
 
-import "persona/models"
+import (
+	"database/sql"
+	"fmt"
+	"persona/models"
+)
 
 type User struct {
 	ID        int     `json:"id"`
@@ -19,6 +23,7 @@ func FindAll() (Users, error) {
 		return nil, err
 	}
 
+	defer rows.Close()
 	users := Users{}
 	for rows.Next() {
 		var user User
@@ -29,7 +34,6 @@ func FindAll() (Users, error) {
 		users = append(users, user)
 	}
 
-	rows.Close()
 	return users, nil
 }
 
@@ -38,6 +42,9 @@ func FindByID(id int) (User, error) {
 	row := models.MyDb.QueryRow("SELECT * FROM users WHERE id = ?", id)
 	err := row.Scan(&user.ID, &user.Name, &user.Email, &user.Phone, &user.BirthDay, &user.CreatedAt)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return User{}, fmt.Errorf("session not found")
+		}
 		return User{}, err
 	}
 

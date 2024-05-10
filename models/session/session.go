@@ -34,6 +34,7 @@ func Create(session Session) (Session, error) {
 		return Session{}, err
 	}
 
+	defer stmt.Close()
 	res, err := stmt.Exec(session.UserID, session.Session)
 	if err != nil {
 		return Session{}, err
