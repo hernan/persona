@@ -22,7 +22,7 @@ func Login(c echo.Context) error {
 		return echo.ErrBadRequest
 	}
 
-	accountExists := checkAccountExits(*acc.Name, *acc.Password)
+	accID, accountExists := checkAccountExits(*acc.Name, *acc.Password)
 	if !accountExists {
 		return echo.ErrUnauthorized
 	}
@@ -32,7 +32,7 @@ func Login(c echo.Context) error {
 		return echo.ErrInternalServerError
 	}
 
-	storeToken(token)
+	storeToken(accID, token)
 
 	return c.JSON(http.StatusOK, map[string]string{
 		"token": token,
@@ -44,9 +44,9 @@ func Login(c echo.Context) error {
 	// The token will be stored in the server and invalidated after a certain period of time
 }
 
-func storeToken(token string) {
+func storeToken(accID int, token string) {
 	session.Create(session.Session{
-		UserID:  1,
+		UserID:  accID,
 		Session: &token,
 	})
 }
@@ -61,17 +61,17 @@ func generateRandomToken() (string, error) {
 	return hex.EncodeToString(token), nil
 }
 
-func checkAccountExits(name string, password string) bool {
+func checkAccountExits(name string, password string) (int, bool) {
 	acc, err := account.FindByName(name)
 	if err != nil {
-		return false
+		return 0, false
 	}
 
 	if *acc.Password != password {
-		return false
+		return 0, false
 	}
 
-	return acc.ID != 0
+	return acc.ID, acc.ID != 0
 }
 
 func Logout(c echo.Context) error {
