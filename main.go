@@ -15,4 +15,6 @@ func main() {
 
 	models.DBInit()
 	router.Init()
+
+	defer models.MyDb.Close()
 }
